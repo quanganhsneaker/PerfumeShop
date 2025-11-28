@@ -1,0 +1,44 @@
+﻿@model PerfumeShop.Models.Order
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Chi tiết đơn @Model.OrderCode</h2>
+
+<p><b>Khách hàng:</b> @Model.FullName</p>
+<p><b>SĐT:</b> @Model.Phone</p>
+<p><b>Địa chỉ:</b> @Model.Address</p>
+
+<h4>Trạng thái: @Model.Status</h4>
+
+<form method="post" action="/AdminOrder/UpdateStatus/@Model.Id" class="mb-4">
+    <select name="status" class="form-select w-25">
+        <option>Pending</option>
+        <option>Shipping</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+    </select>
+    <button class="btn btn-dark mt-2">Cập nhật</button>
+</form>
+
+<h3>Sản phẩm trong đơn</h3>
+<table class="table table-bordered bg-white">
+    <tr>
+        <th>Ảnh</th>
+        <th>Sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+    </tr>
+
+    @foreach (var item in Model.OrderItems)
+    {
+        <tr>
+            <td><img src="@item.Product.ImageUrl" width="50" /></td>
+            <td>@item.Product.Name</td>
+            <td>@item.Price.ToString("N0") đ</td>
+            <td>@item.Quantity</td>
+        </tr>
+    }
+</table>
+
+<h3 class="text-end">Tổng: @Model.TotalAmount.ToString("N0") đ</h3>

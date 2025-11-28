@@ -1,0 +1,27 @@
+﻿@model List<PerfumeShop.Models.User>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Danh sách người dùng</h2>
+
+<table class="table table-bordered bg-white shadow">
+    <tr>
+        <th>ID</th>
+        <th>Họ tên</th>
+        <th>Email</th>
+        <th>Quyền</th>
+        <th>Ngày tạo</th>
+    </tr>
+
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.Id</td>
+            <td>@u.FullName</td>
+            <td>@u.Email</td>
+            <td>@u.Role</td>
+            <td>@u.CreatedAt</td>
+        </tr>
+    }
+</table>

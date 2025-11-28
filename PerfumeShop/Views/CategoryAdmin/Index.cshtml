@@ -1,0 +1,36 @@
+﻿@model List<PerfumeShop.Models.Category>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý loại sản phẩm";
+}
+
+<h2 class="mb-4">Danh sách loại sản phẩm</h2>
+
+<a href="/CategoryAdmin/Create" class="btn btn-primary mb-3">+ Thêm loại</a>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên loại</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.Name</td>
+                <td>
+                    <a href="/CategoryAdmin/Edit/@c.Id" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="/CategoryAdmin/Delete/@c.Id"
+                       onclick="return confirm('Xóa loại này?')"
+                       class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

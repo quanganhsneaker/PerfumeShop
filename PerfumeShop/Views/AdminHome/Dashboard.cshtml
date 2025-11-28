@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<div class="container mt-4">
+
+    <h2 class="fw-bold mb-4">📊 Admin Dashboard</h2>
+
+    <div class="row g-4">
+
+        <!-- Tổng doanh thu -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-secondary">Tổng doanh thu</h6>
+                    <h3 class="fw-bold text-success">@ViewBag.TotalRevenue.ToString("N0") đ</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tổng đơn hàng -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-secondary">Tổng đơn hàng</h6>
+                    <h3 class="fw-bold">@ViewBag.TotalOrders</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tổng Users -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-secondary">Tổng người dùng</h6>
+                    <h3 class="fw-bold">@ViewBag.TotalUsers</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Biểu đồ doanh thu theo tháng -->
+    <div class="card mt-5 shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">📈 Doanh thu theo tháng</h5>
+            <canvas id="revenueChart" height="100"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = @Html.Raw(ViewBag.Months);
+    const data = @Html.Raw(ViewBag.Revenues);
+
+    const ctx = document.getElementById('revenueChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu',
+                data: data,
+                borderWidth: 3,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        }
+    });
+</script>

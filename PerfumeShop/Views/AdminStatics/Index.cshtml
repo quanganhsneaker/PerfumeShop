@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4">Thống kê tổng quan</h2>
+
+<div class="row text-center">
+    <div class="col-md-4 mb-3">
+        <div class="p-4 bg-white shadow rounded">
+            <h5>Doanh thu</h5>
+            <h3 class="text-success fw-bold">@ViewBag.TotalRevenue.ToString("N0") đ</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="p-4 bg-white shadow rounded">
+            <h5>Tổng đơn hàng</h5>
+            <h3>@ViewBag.TotalOrders</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="p-4 bg-white shadow rounded">
+            <h5>Tổng người dùng</h5>
+            <h3>@ViewBag.TotalUsers</h3>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<h3>Doanh thu theo tháng</h3>
+<canvas id="chartRevenue" width="400" height="150"></canvas>
+
+<h3 class="mt-5">Đơn hàng theo trạng thái</h3>
+<canvas id="chartStatus" width="400" height="150"></canvas>
+
+<h3 class="mt-5">Sản phẩm bán chạy</h3>
+<div id="bestSeller"></div>
+
+<h3 class="mt-5">Sản phẩm đánh giá cao</h3>
+<div id="topRated"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // =====================================
+    // BIỂU ĐỒ DOANH THU THEO THÁNG
+    // =====================================
+    fetch('/AdminStatics/RevenueMonthly')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(x => "Tháng " + x.month);
+            const values = data.map(x => x.revenue);
+
+            new Chart(document.getElementById("chartRevenue"), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Doanh thu",
+                        data: values,
+                        borderWidth: 3,
+                        borderColor: "blue"
+                    }]
+                }
+            });
+        });
+
+    // =====================================
+    // BIỂU ĐỒ ĐƠN HÀNG THEO TRẠNG THÁI
+    // =====================================
+    fetch('/AdminStatics/OrdersByStatus')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(x => x.status);
+            const values = data.map(x => x.count);
+
+            new Chart(document.getElementById("chartStatus"), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Số đơn",
+                        data: values,
+                        borderWidth: 1,
+                        backgroundColor: ["green", "orange", "blue", "red"]
+                    }]
+                }
+            });
+        });
+
+    // =====================================
+    // SẢN PHẨM BÁN CHẠY
+    // =====================================
+    fetch('/AdminStatics/BestSeller')
+        .then(res => res.json())
+        .then(data => {
+            let html = "";
+            data.forEach(p => {
+                html += `
+                    <div class="p-3 bg-white shadow mb-2 rounded">
+                        <img src="${p.image}" width="60" />
+                        <b>${p.productName}</b> | Bán: ${p.totalSold}
+                    </div>`;
+            });
+            document.getElementById("bestSeller").innerHTML = html;
+        });
+
+    // =====================================
+    // SẢN PHẨM TOP RATED
+    // =====================================
+    fetch('/AdminStatics/TopRated')
+        .then(res => res.json())
+        .then(data => {
+            let html = "";
+            data.forEach(p => {
+                html += `
+                    <div class="p-3 bg-white shadow mb-2 rounded">
+                        <img src="${p.imageUrl}" width="60" />
+                        <b>${p.name}</b> | Rating: ${p.rating}
+                    </div>`;
+            });
+            document.getElementById("topRated").innerHTML = html;
+        });
+</script>

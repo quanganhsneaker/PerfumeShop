@@ -1,0 +1,45 @@
+﻿@model List<PerfumeShop.Models.Product>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<h2 class="mb-4">Danh sách sản phẩm</h2>
+
+<a href="/ProductAdmin/Create" class="btn btn-primary mb-3">+ Thêm sản phẩm</a>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Hình</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Rating</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td><img src="@p.ImageUrl" width="60" class="rounded" /></td>
+                <td>@p.Name</td>
+                <td>@p.Category?.Name</td>
+                <td>@p.Price.ToString("N0") đ</td>
+                <td>@p.Rating</td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning" href="/ProductAdmin/Edit/@p.Id">Sửa</a>
+                    <a class="btn btn-sm btn-danger"
+                       onclick="return confirm('Xóa sản phẩm này?')"
+                       href="/ProductAdmin/Delete/@p.Id">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

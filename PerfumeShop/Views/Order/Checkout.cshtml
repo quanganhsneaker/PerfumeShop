@@ -1,0 +1,20 @@
+﻿@model PerfumeShop.DTOs.CheckoutDto
+@{
+    Layout = "_ShopLayout";
+}
+
+<h2>Thông tin giao hàng</h2>
+
+<form method="post" class="p-4 bg-white shadow rounded">
+
+    <label>Họ tên</label>
+    <input name="FullName" class="form-control mb-3" />
+
+    <label>Số điện thoại</label>
+    <input name="Phone" class="form-control mb-3" />
+
+    <label>Địa chỉ</label>
+    <input name="Address" class="form-control mb-3" />
+
+    <button class="btn btn-dark">Đặt hàng</button>
+</form>
