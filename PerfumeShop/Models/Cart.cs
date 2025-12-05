@@ -1,12 +1,13 @@
-﻿namespace PerfumeShop.Models
-{
-    public class Cart
-    {
-        public int Id { get; set; }
+﻿using PerfumeShop.Core;
 
+namespace PerfumeShop.Models
+{
+    public class Cart : BaseEntity
+    {
+   
         public int UserId { get; set; }
         public User User { get; set; }
 
         public List<CartItem> Items { get; set; } = new();
-    }
+    } 
 }

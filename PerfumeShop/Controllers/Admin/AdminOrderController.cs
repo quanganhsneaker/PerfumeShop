@@ -1,60 +1,66 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Data;
+using PerfumeShop.Helpers;
+using PerfumeShop.Orders.Admin.Commands;
+using PerfumeShop.Orders.Admin.Queries.GetAdminOrders;
+using System.Threading.Tasks;
 
 namespace PerfumeShop.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class AdminOrderController : Controller
     {
         private readonly ApplicationDbContext _db;
-
-        public AdminOrderController(ApplicationDbContext db)
+        private readonly PermissionService _perm;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        public AdminOrderController(ApplicationDbContext db, PermissionService perm, IMapper mapper, IMediator mediator)
         {
             _db = db;
+            _perm = perm;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
-        // ============================
-        // LIST ORDERS
-        // ============================
-        public IActionResult Index()
+      
+        public async Task<IActionResult> Index()
         {
-            var orders = _db.Orders
-                .Include(x => x.User)
-                .OrderByDescending(x => x.CreatedAt)
-                .ToList();
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "order.manage"))
+                return RedirectToAction("Denied", "Auth");
+            var list = await _mediator.Send(new GetAdminOrdersQuery());
 
-            return View(orders);
+
+            return View(list);
         }
 
-        // ============================
-        // ORDER DETAIL
-        // ============================
-        public IActionResult Detail(int id)
+       
+        public async Task<IActionResult> Detail(int id)
         {
-            var order = _db.Orders
-                .Include(x => x.OrderItems)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefault(x => x.Id == id);
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "order.detail"))
+                return RedirectToAction("Denied", "Auth");
+            var vm = await _mediator.Send(new GetAdminOrderDetailQuery(id));
 
-            if (order == null) return NotFound();
 
-            return View(order);
+            if (vm == null) return NotFound();
+
+            return View(vm);
         }
 
-        // ============================
-        // UPDATE STATUS (POST)
-        // ============================
+     
         [HttpPost]
-        public IActionResult UpdateStatus(int id, string status)
+        public async Task<IActionResult> UpdateStatus(int id, string status)
         {
-            var order = _db.Orders.Find(id);
-            if (order == null) return NotFound();
-
-            order.Status = status;
-            _db.SaveChanges();
-
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "order.updatestatus"))
+                return RedirectToAction("Denied", "Auth");
+            bool ok = await _mediator.Send(new UpdateAdminStatusOrderCommand(id, status));
+            if (!ok) return NotFound();
             return RedirectToAction("Detail", new { id });
         }
     }

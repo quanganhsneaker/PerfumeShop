@@ -49,33 +49,65 @@
     <div class="card mt-5 shadow-sm border-0">
         <div class="card-body">
             <h5 class="fw-bold mb-3">📈 Doanh thu theo tháng</h5>
-            <canvas id="revenueChart" height="100"></canvas>
+            <canvas id="revenueChart" height="120"></canvas>
         </div>
     </div>
+
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const labels = @Html.Raw(ViewBag.Months);
-    const data = @Html.Raw(ViewBag.Revenues);
+    function loadRevenueChart() {
 
-    const ctx = document.getElementById('revenueChart');
+        // Tự tính 30 ngày gần nhất
+        let end = new Date().toISOString().split("T")[0];
+        let start = new Date(Date.now() - 29 * 24 * 3600 * 1000)
+                        .toISOString().split("T")[0];
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Doanh thu',
-                data: data,
-                borderWidth: 3,
-                borderColor: '#007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                fill: true,
-                tension: 0.3
-            }]
-        }
-    });
+        fetch(`/AdminStatics/RevenueDaily?start=${start}&end=${end}`)
+            .then(res => res.json())
+            .then(data => {
+
+                const ctx = document.getElementById("revenueChart");
+
+                const chart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: data.map(x => x.date),
+                        datasets: [{
+                            label: "Doanh thu",
+                            data: data.map(x => x.total),
+                            borderColor: "#3b82f6",
+                            backgroundColor: "rgba(59,130,246,0.35)",
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx =>
+                                        ctx.raw.toLocaleString("vi-VN") + " đ"
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: v => v.toLocaleString("vi-VN")
+                                }
+                            }
+                        }
+                    }
+                });
+
+            });
+    }
+
+    // Gọi khi trang load
+    loadRevenueChart();
 </script>

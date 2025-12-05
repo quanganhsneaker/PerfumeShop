@@ -450,15 +450,58 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- TempData -->
     <script>
+            var toastMessage = "@TempData["toast"]";
+        var toastType = "@TempData["toastType"]";
         var deleteSuccessMessage = "@TempData["DeleteSuccess"]";
     </script>
 
     <!-- Script chung -->
     <script src="~/js/site.js"></script>
+
+    <script>
+        $(function () {
+            if (toastMessage && toastMessage.trim() !== "") {
+
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: "toast-top-right",
+                    timeOut: 1000,
+                    extendedTimeOut: 1000,
+                    showDuration: 500,
+                    hideDuration: 400,
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut",
+                    newestOnTop: true,
+                    preventDuplicates: true
+                };
+
+
+                if (toastType === "success") {
+                    toastr.success(toastMessage);
+                }
+
+                else if (toastType === "error") {
+                    toastr.error(toastMessage);
+                }
+
+                else if (toastType === "warning") {
+                    toastr.warning(toastMessage);
+                }
+                else {
+                    toastr.info(toastMessage);
+                }
+            }
+        });
+    </script>
+
+
+
     <script>
 
         function flyToCart(imgSrc, buttonElement) {

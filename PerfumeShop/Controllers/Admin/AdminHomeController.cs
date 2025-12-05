@@ -1,22 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeShop.Data;
+using PerfumeShop.Helpers;
 using System.Linq;
 
 namespace PerfumeShop.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class AdminHomeController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly PermissionService _perm;
 
-        public AdminHomeController(ApplicationDbContext db)
+        public AdminHomeController(ApplicationDbContext db, PermissionService perm)
         {
             _db = db;
+            _perm = perm;
         }
 
         public IActionResult Dashboard()
         {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "admin.dashboard"))
+            return RedirectToAction("Denied", "Auth");
             // Stat numbers
             ViewBag.TotalRevenue = _db.Orders
                 .Where(o => o.Status == "Completed")

@@ -1,10 +1,12 @@
-﻿namespace PerfumeShop.Models
+﻿using PerfumeShop.Core;
+
+namespace PerfumeShop.Models
 {
-    public class Permission
+    public class Permission : BaseEntity
     {
-        public int Id { get; set; }
-        public string Name { get; set; }     // Ví dụ: Thêm sản phẩm
-        public string Code { get; set; }     // Ví dụ: product.create
+     
+        public string Name { get; set; }    
+        public string Code { get; set; }    
 
         public List<UserPermission> UserPermissions { get; set; }
     }

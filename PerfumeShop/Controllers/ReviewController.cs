@@ -25,16 +25,13 @@ namespace PerfumeShop.Controllers
                 );
         }
 
-        // ===========================
-        // ADD REVIEW
-        // ===========================
+
         [Authorize]
         [HttpPost]
         public IActionResult AddReview(ReviewDto dto)
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
 
-            // kiểm tra user có đơn hàng Completed với sản phẩm chưa?
             if (!UserBoughtProduct(userId, dto.ProductId))
                 return Unauthorized("Bạn chưa mua sản phẩm này hoặc đơn hàng chưa hoàn thành.");
 
@@ -50,7 +47,6 @@ namespace PerfumeShop.Controllers
             _db.Reviews.Add(review);
             _db.SaveChanges();
 
-            // Cập nhật điểm trung bình
             var avg = _db.Reviews
                 .Where(x => x.ProductId == dto.ProductId)
                 .Average(x => x.Rating);
@@ -63,9 +59,6 @@ namespace PerfumeShop.Controllers
         }
 
 
-        // ===========================
-        // SHOW REVIEWS FOR PRODUCT
-        // ===========================
         public IActionResult List(int productId)
         {
             var list = _db.Reviews

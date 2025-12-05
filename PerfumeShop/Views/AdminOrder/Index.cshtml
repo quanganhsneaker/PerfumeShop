@@ -1,4 +1,4 @@
-﻿@model List<PerfumeShop.Models.Order>
+﻿@model List<PerfumeShop.DTOs.AdminOrderListVM>;
 @{
     Layout = "_AdminLayout";
 }
@@ -19,7 +19,7 @@
     {
         <tr>
             <td>@o.OrderCode</td>
-            <td>@o.User.FullName</td>
+            <td>@o.CustomerName</td>
             <td>@o.TotalAmount.ToString("N0") đ</td>
             <td>@o.Status</td>
             <td>@o.CreatedAt</td>

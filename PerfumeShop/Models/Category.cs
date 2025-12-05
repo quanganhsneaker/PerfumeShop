@@ -1,9 +1,11 @@
-﻿namespace PerfumeShop.Models
-{
-    public class Category
+﻿    using PerfumeShop.Core;
+
+    namespace PerfumeShop.Models
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<Product> Products { get; set; }
+        public class Category : BaseEntity
+        {
+ 
+            public string Name { get; set; }
+            public List<Product> Products { get; set; }
+        }
     }
-}

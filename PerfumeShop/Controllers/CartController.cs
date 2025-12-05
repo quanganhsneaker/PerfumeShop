@@ -17,7 +17,7 @@ namespace PerfumeShop.Controllers
         }
      
 
-        // Lấy hoặc tạo giỏ hàng của user
+       
         private Cart GetOrCreateCart()
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
@@ -36,7 +36,7 @@ namespace PerfumeShop.Controllers
 
             return cart;
         }
-        // đếm số lượng item ở trong giỏ 
+      
         private int GetCartCount()
         {
             if (!User.Identity.IsAuthenticated)
@@ -50,9 +50,7 @@ namespace PerfumeShop.Controllers
         .Distinct()
                 .Count();
         }
-        // ==========================
-        // Hiển thị giỏ hàng
-        // ==========================
+   
         public IActionResult Index()
         {
          
@@ -86,7 +84,7 @@ namespace PerfumeShop.Controllers
 
             _db.SaveChanges();
 
-            int count = GetCartCount();  // đếm số product khác nhau
+            int count = GetCartCount();  
 
             return Json(new { cartCount = count });
         }

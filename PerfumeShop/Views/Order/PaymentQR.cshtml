@@ -1,0 +1,25 @@
+﻿@{
+    Layout = "_ShopLayout";
+}
+
+<div class="text-center p-4 bg-white shadow rounded">
+
+    <h3>Thanh toán Online</h3>
+    <p>Mã đơn: <b>@ViewBag.Order.OrderCode</b></p>
+
+    <h2 class="text-success fw-bold mb-3">
+        @ViewBag.Order.TotalAmount.ToString("N0") đ
+    </h2>
+
+    <img src="@ViewBag.QR" width="300" class="shadow rounded mb-3" />
+
+    <p>Quét mã QR để thanh toán vào tài khoản của shop</p>
+
+    <div class="alert alert-info fw-bold">
+        Nội dung chuyển khoản: @ViewBag.Order.OrderCode
+    </div>
+
+    <a href="/Order/Detail/@ViewBag.Order.Id" class="btn btn-dark">
+        Tôi đã thanh toán
+    </a>
+</div>

@@ -2,126 +2,452 @@
     Layout = "_AdminLayout";
 }
 
-<h2 class="mb-4">Thống kê tổng quan</h2>
+<style>
+    :root {
+        --radius: 14px;
+    }
 
-<div class="row text-center">
-    <div class="col-md-4 mb-3">
-        <div class="p-4 bg-white shadow rounded">
-            <h5>Doanh thu</h5>
-            <h3 class="text-success fw-bold">@ViewBag.TotalRevenue.ToString("N0") đ</h3>
+    .dash-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 8px;
+    }
+
+    .glass {
+        border-radius: var(--radius);
+        background: #fff;
+        box-shadow: 0 6px 16px rgba(0,0,0,.05);
+      
+    }
+
+    .glass-header {
+        padding: 8px 12px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .glass-body {
+        padding: 10px 12px;
+       
+    }
+
+    .glass-bodyb {
+        padding: 10px 12px;
+        margin-bottom:83px;
+    }
+    
+
+    .kpi-card {
+        padding: 16px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    }
+
+        .kpi-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+    .grid-2col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .grid-3col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    @@media (max-width: 992px) {
+        .grid-2col, .grid-3col {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Product cards */
+    .prod-item {
+        padding: 10px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: 0 6px 16px rgba(0,0,0,.05);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+        .prod-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+    /* DARK MODE */
+    .dark body {
+        background: #0f172a;
+        color: #e5e7eb;
+    }
+
+    .dark .glass {
+        background: #111827;
+        border: 1px solid #1f2937;
+    }
+
+    .dark .prod-item {
+        background: #1e293b;
+        box-shadow: none;
+        border: 1px solid #334155;
+    }
+
+    .dark .kpi-card {
+        background: #1e293b;
+        box-shadow: none;
+        border: 1px solid #334155;
+    }
+    /* Giảm kích thước 2 biểu đồ */
+    .chart-box {
+        height: 260px; /* chiều cao biểu đồ */
+        padding: 0 10px;
+    }
+
+    /* Biểu đồ tròn phải luôn vuông */
+    .donut-box {
+        height: 260px;
+        width: 260px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        /* Canvas biểu đồ phải co theo box */
+        .chart-box canvas,
+        .donut-box canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+</style>
+
+
+<div class="dash-wrap">
+
+    <div class="glass mb-2">
+        <div class="glass-header">
+            <h5 class="mb-0">Báo cáo hệ thống</h5>
+
+            <input id="dateRange" class="form-control"
+                   style="width:200px;"
+                   placeholder="Chọn thời gian" />
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="darkToggle">
+            </div>
+        </div>
+
+        <div class="glass-body">
+            <div class="row text-center">
+                <div class="col-md-4 mb-2">
+                    <div class="kpi-card">
+                        <div class="text-muted">Tổng doanh thu</div>
+                        <div class="value" id="kpiRevenue">@ViewBag.TotalRevenue.ToString("N0") đ</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <div class="kpi-card">
+                        <div class="text-muted">Tổng đơn hàng</div>
+                        <div class="value" id="kpiOrders">@ViewBag.TotalOrders</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <div class="kpi-card">
+                        <div class="text-muted">Tổng người dùng</div>
+                        <div class="value" id="kpiUsers">@ViewBag.TotalUsers</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="p-4 bg-white shadow rounded">
-            <h5>Tổng đơn hàng</h5>
-            <h3>@ViewBag.TotalOrders</h3>
+
+    <div class="grid-2col mb-2">
+        <div class="glass">
+            <div class="glass-header">Doanh thu theo ngày</div>
+            <div class="glass-bodyb">
+                <div class="chart-box">
+                    <div id="chartRevenue"></div>
+                </div>
+            </div>
         </div>
+
+
+        <div class="glass">
+            <div class="glass-header">Đơn hàng theo trạng thái</div>
+            <div class="glass-bodyb">
+                <div class="donut-box">
+                    <canvas id="chartStatus"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="p-4 bg-white shadow rounded">
-            <h5>Tổng người dùng</h5>
-            <h3>@ViewBag.TotalUsers</h3>
-        </div>
+
+    <div class="glass mb-2">
+        <div class="glass-header"> Sản phẩm bán chạy</div>
+        <div class="glass-body" id="bestSeller"></div>
     </div>
+
+    <div class="glass mb-2">
+        <div class="glass-header">Sản phẩm đánh giá cao</div>
+        <div class="glass-body" id="topRated"></div>
+    </div>
+
 </div>
 
-<hr />
-
-<h3>Doanh thu theo tháng</h3>
-<canvas id="chartRevenue" width="400" height="150"></canvas>
-
-<h3 class="mt-5">Đơn hàng theo trạng thái</h3>
-<canvas id="chartStatus" width="400" height="150"></canvas>
-
-<h3 class="mt-5">Sản phẩm bán chạy</h3>
-<div id="bestSeller"></div>
-
-<h3 class="mt-5">Sản phẩm đánh giá cao</h3>
-<div id="topRated"></div>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
-    // =====================================
-    // BIỂU ĐỒ DOANH THU THEO THÁNG
-    // =====================================
-    fetch('/AdminStatics/RevenueMonthly')
-        .then(res => res.json())
-        .then(data => {
-            const labels = data.map(x => "Tháng " + x.month);
-            const values = data.map(x => x.revenue);
+      function loadStatusChart(start, end) {
+        fetch(`/AdminStatics/OrdersByStatusRange?start=${start}&end=${end}`)
+            .then(res => res.json())
+            .then(data => {
 
-            new Chart(document.getElementById("chartRevenue"), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Doanh thu",
-                        data: values,
-                        borderWidth: 3,
-                        borderColor: "blue"
-                    }]
+                const labels = data.map(x => x.status);
+                const counts = data.map(x => x.count);
+
+                // Xóa biểu đồ cũ
+                document.getElementById("chartStatus").remove();
+                let canvas = document.createElement("canvas");
+                canvas.id = "chartStatus";
+                canvas.height = 320;
+                document.querySelector(".donut-box").appendChild(canvas);
+
+                new Chart(canvas, {
+                    type: 'doughnut',   // ✔ Sửa lại
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: counts,
+                            backgroundColor: [
+                                "#3b82f6",
+                                "#10b981",
+                                "#f59e0b",
+                                "#ef4444",
+                                "#6366f1"
+                            ]
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false
+                    }
+                });
+            });
+    }
+
+
+        function loadSummary(start, end) {
+        fetch(`/AdminStatics/Summary?start=${start}&end=${end}`)
+            .then(r => r.json())
+            .then(data => {
+
+
+                document.querySelector("#kpiRevenue").innerText =
+                    data.totalRevenue.toLocaleString("vi-VN") + " đ";
+
+                document.querySelector("#kpiOrders").innerText =
+                    data.totalOrders;
+
+                document.querySelector("#kpiUsers").innerText =
+                    data.totalUsers;
+
+                // BIỂU ĐỒ ĐƠN HÀNG THEO TRẠNG THÁI
+                const ctx = document.getElementById("chartStatus");
+                new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: data.ordersByStatus.map(x => x.status),
+                        datasets: [{
+                            backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
+                            data: data.ordersByStatus.map(x => x.count)
+                        }]
+                    }
+                });
+
+            });
+    }
+
+    (function () {
+
+        // ============================
+        // DARK MODE
+        // ============================
+        const darkToggle = document.getElementById("darkToggle");
+        if (localStorage.getItem("admDark") === "1") {
+            document.documentElement.classList.add("dark");
+            darkToggle.checked = true;
+        }
+        darkToggle.addEventListener("change", () => {
+            document.documentElement.classList.toggle("dark", darkToggle.checked);
+            localStorage.setItem("admDark", darkToggle.checked ? "1" : "0");
+        });
+
+        function loadRevenueChart(start, end) {
+            fetch(`/AdminStatics/RevenueDaily?start=${start}&end=${end}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    const labels = data.map(x => x.date);
+                    const totals = data.map(x => x.total);
+
+                    const revenueOptions = {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            animations: { easing: 'easeinout' }
+                        },
+                        series: [{ name: 'Doanh thu', data: totals }],
+                        xaxis: {
+                            categories: labels,
+                            type: 'datetime',
+                            labels: { rotate: 0 }
+                        },
+                        yaxis: {
+                            labels: {
+                                formatter: v =>
+                                    v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' :
+                                    v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' :
+                                    v
+                            }
+                        },
+                        dataLabels: { enabled: false },
+                        stroke: { curve: 'smooth', width: 2 },
+                        fill: {
+                            type: 'gradient',
+                            gradient: { shadeIntensity: .2, opacityFrom: .55, opacityTo: 0 }
+                        },
+                        tooltip: {
+                            x: { format: 'dd/MM/yyyy' },
+                            y: { formatter: v => v.toLocaleString('vi-VN') + ' ₫' }
+                        },
+                        colors: ['#3b82f6']
+                    };
+
+                    document.querySelector("#chartRevenue").innerHTML = "";
+                    new ApexCharts(document.querySelector('#chartRevenue'), revenueOptions).render();
+                });
+        }
+
+
+        
+        const endDate = dayjs().format("YYYY-MM-DD");
+        const startDate = dayjs().subtract(29, "day").format("YYYY-MM-DD");
+
+        loadRevenueChart(startDate, endDate);
+        loadSummary(startDate, endDate); 
+
+
+        flatpickr("#dateRange", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            defaultDate: [startDate, endDate],
+            onChange: function (selectedDates) {
+                if (selectedDates.length === 2) {
+
+                    let s = dayjs(selectedDates[0]).format("YYYY-MM-DD");
+                    let e = dayjs(selectedDates[1]).format("YYYY-MM-DD");
+
+                    loadRevenueChart(s, e);
+                    loadSummary(s, e);
+                    loadStatusChart(s, e);  
+                    Toastify({
+                        text: "Đang tải báo cáo…",
+                        duration: 1200,
+                        gravity: "bottom",
+                        position: "right"
+                    }).showToast();
                 }
-            });
+            }
         });
 
-    // =====================================
-    // BIỂU ĐỒ ĐƠN HÀNG THEO TRẠNG THÁI
-    // =====================================
-    fetch('/AdminStatics/OrdersByStatus')
-        .then(res => res.json())
-        .then(data => {
-            const labels = data.map(x => x.status);
-            const values = data.map(x => x.count);
 
-            new Chart(document.getElementById("chartStatus"), {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Số đơn",
-                        data: values,
-                        borderWidth: 1,
-                        backgroundColor: ["green", "orange", "blue", "red"]
-                    }]
-                }
+        // ============================
+        // CHART 2: Orders by Status
+        // ============================
+        fetch('/AdminStatics/OrdersByStatus')
+            .then(r => r.json())
+            .then(data => {
+                new Chart(document.getElementById("chartStatus"), {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(x => x.status),
+                        datasets: [{
+                            data: data.map(x => x.count),
+                            backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"]
+                        }]
+                    }
+                });
             });
-        });
 
-    // =====================================
-    // SẢN PHẨM BÁN CHẠY
-    // =====================================
-    fetch('/AdminStatics/BestSeller')
-        .then(res => res.json())
-        .then(data => {
-            let html = "";
-            data.forEach(p => {
-                html += `
-                    <div class="p-3 bg-white shadow mb-2 rounded">
-                        <img src="${p.image}" width="60" />
-                        <b>${p.productName}</b> | Bán: ${p.totalSold}
-                    </div>`;
-            });
-            document.getElementById("bestSeller").innerHTML = html;
-        });
 
-    // =====================================
-    // SẢN PHẨM TOP RATED
-    // =====================================
-    fetch('/AdminStatics/TopRated')
-        .then(res => res.json())
-        .then(data => {
-            let html = "";
-            data.forEach(p => {
-                html += `
-                    <div class="p-3 bg-white shadow mb-2 rounded">
-                        <img src="${p.imageUrl}" width="60" />
-                        <b>${p.name}</b> | Rating: ${p.rating}
-                    </div>`;
+        // ============================
+        // BEST SELLER
+        // ============================
+        fetch('/AdminStatics/BestSeller')
+            .then(r => r.json())
+            .then(list => {
+                let html = "";
+                list.forEach(p => {
+                    html += `
+                        <div class="p-3 bg-white shadow mb-2 rounded d-flex align-items-center">
+                            <img src="${p.image}" width="60" class="me-3 rounded"/>
+                            <div>
+                                <b>${p.productName}</b><br>
+                                <span class="text-muted">Bán: ${p.totalSold}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById("bestSeller").innerHTML = html;
             });
-            document.getElementById("topRated").innerHTML = html;
-        });
+
+
+        // ============================
+        // TOP RATED
+        // ============================
+        fetch('/AdminStatics/TopRated')
+            .then(r => r.json())
+            .then(list => {
+                let html = "";
+                list.forEach(p => {
+                    html += `
+                        <div class="p-3 bg-white shadow mb-2 rounded d-flex align-items-center">
+                            <img src="${p.imageUrl}" width="60" class="me-3 rounded"/>
+                            <div>
+                                <b>${p.name}</b><br>
+                                ⭐ ${p.rating}
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById("topRated").innerHTML = html;
+            });
+
+    })();
 </script>

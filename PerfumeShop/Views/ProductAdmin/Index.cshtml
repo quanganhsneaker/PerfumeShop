@@ -1,4 +1,4 @@
-﻿@model List<PerfumeShop.Models.Product>
+﻿@model List<PerfumeShop.DTOs.ProductListVM>
 
 @{
     Layout = "_AdminLayout";
@@ -29,7 +29,7 @@
                 <td>@p.Id</td>
                 <td><img src="@p.ImageUrl" width="60" class="rounded" /></td>
                 <td>@p.Name</td>
-                <td>@p.Category?.Name</td>
+                <td>@p.CategoryName</td>
                 <td>@p.Price.ToString("N0") đ</td>
                 <td>@p.Rating</td>
 
@@ -43,3 +43,43 @@
         }
     </tbody>
 </table>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (Context.Request.Query["success"] == "1")
+    {
+        <script>
+            Swal.fire({
+                icon: "success",
+                title: "Thêm sản phẩm thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+    }
+
+    @if (Context.Request.Query["edited"] == "1")
+    {
+        <script>
+            Swal.fire({
+                icon: "success",
+                title: "Cập nhật sản phẩm thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+    }
+
+    @if (Context.Request.Query["deleted"] == "1")
+    {
+        <script>
+            Swal.fire({
+                icon: "success",
+                title: "Xóa sản phẩm thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+    }
+}
+

@@ -238,7 +238,7 @@
         {
             <div class="cart-item">
 
-                <!-- ẢNH -->
+  
                 <img src="@item.Product.ImageUrl" class="item-img" />
 
                 <div class="flex-grow-1">
@@ -246,7 +246,7 @@
                     <div class="item-price">@item.Product.Price.ToString("N0") đ</div>
                 </div>
 
-                <!-- SỐ LƯỢNG -->
+  
                 <div class="qty-control">
                     <form method="post" action="/Cart/Decrease">
                         <input type="hidden" name="productId" value="@item.ProductId" />
@@ -261,21 +261,20 @@
                     </form>
                 </div>
 
-                <!-- THÀNH TIỀN -->
+          
                 <div class="item-price" style="width:150px; text-align:right;">
                     @((item.Product.Price* item.Qty).ToString("N0")) đ
                 </div>
 
-                <!-- XÓA -->
+             
                 <a onclick="confirmDelete(@item.ProductId)" class="remove-btn">×</a>
 
 
             </div>
         }
-
     </div>
 
-    <!-- TỔNG TIỀN -->
+ 
     <div class="summary-box">
         <h4>
             Tổng cộng:
@@ -291,8 +290,6 @@
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
 <script>
     function confirmDelete(id) {
         Swal.fire({
@@ -307,7 +304,7 @@
             background: "#ffffff",
             color: "#111",
 
-            // Hiệu ứng mở popup
+
             showClass: {
                 popup: "swal2-show-custom"
             },
@@ -315,7 +312,7 @@
                 popup: "swal2-hide-custom"
             },
 
-            // Bo góc + bóng đổ sang trọng
+
             customClass: {
                 popup: "swal-luxury",
                 confirmButton: "swal-confirm-btn",

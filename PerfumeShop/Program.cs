@@ -2,12 +2,22 @@
 using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Data;
 using PerfumeShop.Helpers;
+using PerfumeShop.Mappings;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<PermissionService>();
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+// MediatR
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
 
 // 1) MVC
 builder.Services.AddControllersWithViews();
+
 
 // 2) SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
