@@ -130,6 +130,8 @@ namespace PerfumeShop.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
+            TempData["toast"] = "Đăng xuất thành công!";
+            TempData["toastType"] = "success";
             return RedirectToAction("Login");
         }
 

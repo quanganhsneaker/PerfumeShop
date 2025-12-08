@@ -13,8 +13,9 @@ namespace PerfumeShop.Models
         public string Address { get; set; }
         public decimal TotalAmount { get; set; }
         public string Status { get; set; }
-    
-     
+
+        public string PaymentStatus { get; set; } = "Unpaid";
+
         // IMPORTANT: THIS IS WHAT YOU ARE MISSING
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 

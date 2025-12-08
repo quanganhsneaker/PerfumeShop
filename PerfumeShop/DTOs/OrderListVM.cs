@@ -17,7 +17,8 @@ namespace PerfumeShop.DTOs
 
         public string CreatedDateString => CreatedAt.ToString("dd/MM/yyyy");
 
-      
-        public int UserId { get; set; }
+        public string PaymentStatus { get; set; }
+
+        public int UserId { get; set; } 
     }
 }

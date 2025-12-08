@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Data;
 using PerfumeShop.Helpers;
 using PerfumeShop.Orders.Admin.Commands;
+using PerfumeShop.Orders.Admin.Queries;
 using PerfumeShop.Orders.Admin.Queries.GetAdminOrders;
 using System.Threading.Tasks;
 
@@ -26,19 +27,30 @@ namespace PerfumeShop.Controllers.Admin
             _mediator = mediator;
         }
 
-      
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index(
+    int page = 1,
+    int pageSize = 10,
+    string searchCode = "",
+    string status = "")
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
+
             if (!_perm.HasPermission(userId, "order.manage"))
                 return RedirectToAction("Denied", "Auth");
-            var list = await _mediator.Send(new GetAdminOrdersQuery());
 
+            var vm = await _mediator.Send(new GetAdminOrdersPagedQuery(
+                page,
+                pageSize,
+                searchCode,
+                status
+            ));
 
-            return View(list);
+            return View(vm);
         }
 
-       
+
+
         public async Task<IActionResult> Detail(int id)
         {
             int userId = int.Parse(User.FindFirst("userId").Value);

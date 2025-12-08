@@ -61,9 +61,6 @@ namespace PerfumeShop.Controllers
             return View(cart);
         }
 
-        // ==========================
-        // Thêm vào giỏ hàng
-        // ==========================
         public IActionResult Add(int id)
         {
             if (!User.Identity.IsAuthenticated)
@@ -90,9 +87,6 @@ namespace PerfumeShop.Controllers
         }
 
 
-        // ==========================
-        // Update số lượng
-        // ==========================
         [HttpPost]
         public IActionResult UpdateQty(int productId, int qty)
         {
@@ -111,9 +105,6 @@ namespace PerfumeShop.Controllers
             return RedirectToAction("Index");
         }
 
-        // ==========================
-        // Xóa item khỏi giỏ hàng
-        // ==========================
         public IActionResult Remove(int productId)
         {
             var cart = GetOrCreateCart();
@@ -130,9 +121,7 @@ namespace PerfumeShop.Controllers
 
             return RedirectToAction("Index");
         }
-        // =======================
-        // Tăng số lượng
-        // =======================
+  
         [HttpPost]
         public IActionResult Increase(int productId)
         {
@@ -148,9 +137,7 @@ namespace PerfumeShop.Controllers
             return RedirectToAction("Index");
         }
 
-        // =======================
-        // Giảm số lượng
-        // =======================
+   
         [HttpPost]
         public IActionResult Decrease(int productId)
         {

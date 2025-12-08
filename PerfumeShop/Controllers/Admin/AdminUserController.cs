@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeShop.Data;
+using PerfumeShop.Helpers;
 
 namespace PerfumeShop.Controllers.Admin
 {
@@ -8,10 +9,12 @@ namespace PerfumeShop.Controllers.Admin
     public class AdminUserController : Controller
     {
         private readonly ApplicationDbContext _db;
-
-        public AdminUserController(ApplicationDbContext db)
+        private readonly PermissionService _perm;
+        public AdminUserController(ApplicationDbContext db, PermissionService perm)
         {
+
             _db = db;
+            _perm = perm;
         }
 
    
@@ -39,6 +42,17 @@ namespace PerfumeShop.Controllers.Admin
             user.Role = role;
             _db.SaveChanges();
             return RedirectToAction("Index", new {success = 1});
+        }
+        public IActionResult Delete(int id)
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            var u = _db.Users.Find(id);
+            if (u == null) return NotFound();
+
+            _db.Users.Remove(u);
+            _db.SaveChanges();
+
+            return RedirectToAction("Index", new { deleted = 1 });
         }
     }
 }

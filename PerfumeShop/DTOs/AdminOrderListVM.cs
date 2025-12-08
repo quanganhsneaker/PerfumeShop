@@ -12,7 +12,7 @@
 
         public DateTime CreatedAt { get; set; }
 
-
+        public string PaymentStatus { get; set; }
         public string CreatedDateString => CreatedAt.ToString("dd/MM/yyyy");
 
 

@@ -1,17 +1,22 @@
-﻿using PerfumeShop.Orders.User.Queries.GetOrderDetail;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PerfumeShop.Data;
 using PerfumeShop.DTOs;
 using PerfumeShop.Orders.User.Commands;
+using PerfumeShop.Orders.User.Queries;
+using PerfumeShop.Orders.User.Queries.GetOrderDetail;
+using PerfumeShop.Services;
 
 [Authorize]
 public class OrderController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly ApplicationDbContext _db;
 
-    public OrderController(IMediator mediator)
+    public OrderController(IMediator mediator, ApplicationDbContext db)
     {
+        _db = db;
         _mediator = mediator;
     }
     [HttpGet]
@@ -24,16 +29,29 @@ public class OrderController : Controller
     {
         int userId = int.Parse(User.FindFirst("userId").Value);
 
-        int newOrderId = await _mediator.Send(new CreateOrderCommand(dto, userId));
+        var result = await _mediator.Send(new CheckoutCommand(dto, userId));
 
-        if (newOrderId < 0)
+        if (result.OrderId < 0)
         {
-            TempData["error"] = "Giỏ hàng trống!";
+            TempData["toast"] = "Giỏ hàng trống!";
+            TempData["toastType"] = "error";
             return RedirectToAction("Index", "Cart");
         }
-
-        return RedirectToAction("Detail", new { id = newOrderId });
+        if (result.IsOnline)
+        {
+            return View("PayWithQR", result);
+        }
+        return RedirectToAction("Detail", new { id = result.OrderId });
     }
+    [HttpGet]
+    public async Task<IActionResult> CheckPaid(int orderId)
+    {
+        var order = await _db.Orders.FindAsync(orderId);
+        return Json(new { paid = order?.PaymentStatus == "Paid" });
+    }
+
+
+
     public async Task<IActionResult> Detail(int id)
     {
         int userId = int.Parse(User.FindFirst("userId").Value);
@@ -45,12 +63,22 @@ public class OrderController : Controller
 
         return View(result);
     }
-    public async Task<IActionResult> MyOrders()
+    public async Task<IActionResult> MyOrders(
+        int page = 1,
+        int pageSize = 5,
+        string searchCode = "",
+        string status = "")
     {
         int userId = int.Parse(User.FindFirst("userId").Value);
 
-        var list = await _mediator.Send(new GetMyOrdersQuery(userId));
+        var vm = await _mediator.Send(new GetMyOrdersPagedQuery(
+            userId,
+            page,
+            pageSize,
+            searchCode,
+            status
+        ));
 
-        return View(list);
+        return View(vm);
     }
 }

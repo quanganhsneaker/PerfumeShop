@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Data;
 using PerfumeShop.Helpers;
 using PerfumeShop.Mappings;
-using MediatR;
+using PerfumeShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<PayOSService>();
+
+
 builder.Services.AddScoped<PermissionService>();
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
