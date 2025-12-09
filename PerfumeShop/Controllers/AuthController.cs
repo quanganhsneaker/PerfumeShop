@@ -51,20 +51,16 @@ namespace PerfumeShop.Controllers
             TempData["toastType"] = "success";
 
             return RedirectToAction("Login");
-        }
-
-
-    
+        }   
         public IActionResult Login() => View();
-
-
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto dto)
         {
+
             if (!ModelState.IsValid)
                 return View(dto);
             var result = await _mediator.Send(new LoginCommand(dto));
+            
 
             //dto.Email = dto.Email.Trim().ToLower();
 

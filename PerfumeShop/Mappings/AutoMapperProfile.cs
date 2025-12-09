@@ -38,11 +38,13 @@ namespace PerfumeShop.Mappings
                 .ForMember(dest => dest.CustomerName,
                            opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<CheckoutDto, Order>()
+       
             .ForMember(d => d.Status, o => o.MapFrom(_ => "Pending"))
             .ForMember(d => d.TotalAmount, o => o.Ignore())   
             .ForMember(d => d.UserId, o => o.Ignore())        
             .ForMember(d => d.OrderCode, o => o.Ignore());
             CreateMap<CartItem, OrderItem>()
+           .ForMember(d => d.Id, o => o.Ignore())
            .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))
            .ForMember(d => d.Price, o => o.MapFrom(s => s.Product.Price))
            .ForMember(d => d.Quantity, o => o.MapFrom(s => s.Qty))

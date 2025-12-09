@@ -2,33 +2,37 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Data;
+using PerfumeShop.DTOs;
 using PerfumeShop.Helpers;
 using PerfumeShop.Mappings;
 using PerfumeShop.Services;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<GroqSettings>(
+    builder.Configuration.GetSection("GroqAI"));
+
 builder.Services.AddScoped<PayOSService>();
 
+builder.Services.AddHttpClient<ChatService>();
+builder.Services.AddScoped<ChatService>();
 
 builder.Services.AddScoped<PermissionService>();
-//AutoMapper
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-// MediatR
+
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-// 1) MVC
 builder.Services.AddControllersWithViews();
 
-
-// 2) SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
-// 3) Cookie Authentication (MVC thuần)
+ 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", opt =>
     {
@@ -36,23 +40,35 @@ builder.Services.AddAuthentication("Cookies")
         opt.AccessDeniedPath = "/Auth/Denied";
         opt.ExpireTimeSpan = TimeSpan.FromHours(24);
     });
-// 4) Authorization (Roles)
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
+ 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ClaimsIssuer = "PerfumeShop";
 
-// 5) Session (giỏ hàng)
+    options.Events.OnSigningIn = context =>
+    {
+
+        var identity = context.Principal.Identity as ClaimsIdentity;
+
+        foreach (var c in identity.Claims)
+            Console.WriteLine($"CLAIM: {c.Type} = {c.Value}");
+
+        return Task.CompletedTask;
+    };
+});
+////
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 var app = builder.Build();
-
-// 6) Error handler
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Shop/Error");
@@ -62,15 +78,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
-// 7) Auth
 app.UseAuthentication();
 app.UseAuthorization();
-
-// 8) Session
 app.UseSession();
-
-// Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Shop}/{action=Index}/{id?}"

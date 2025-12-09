@@ -12,7 +12,7 @@ namespace PerfumeShop.Auth.Commands.Login
         private readonly IMemoryCache _cache;
 
         public LoginHandler (ApplicationDbContext db, IMemoryCache cache)
-        {
+        { 
             _db = db;
             _cache = cache;
         }
@@ -21,7 +21,7 @@ namespace PerfumeShop.Auth.Commands.Login
             var dto = request.Dto;
 
             dto.Email = dto.Email.Trim().ToLower();
-            // lockout chống brute force
+        
             string key = $"login_failed_{dto.Email}";
             if(_cache.TryGetValue<int>(key, out int failCount) && failCount >= 5)
             {
@@ -46,7 +46,7 @@ namespace PerfumeShop.Auth.Commands.Login
                 };
             }
 
-            // Reset fail count khi đăng nhập đúng
+        
             _cache.Remove(key);
 
             return new LoginResult
