@@ -1,29 +1,54 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PerfumeShop.Application.Categories.Commands;
+using PerfumeShop.Application.Categories.Queries;
+using PerfumeShop.Application.DTOs;
 using PerfumeShop.Application.Services;
-using PerfumeShop.Domain.Models;
-using PerfumeShop.Infrastructure.Data;
-using PerfumeShop.Infrastructure.Services;
 
 namespace PerfumeShop.Presentation.Controllers.Admin
 {
     [Authorize]
     public class CategoryAdminController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IMediator _mediator;
         private readonly IPermissionService _perm;
-        public CategoryAdminController(ApplicationDbContext db, IPermissionService perm)
+
+        public CategoryAdminController(IMediator mediator, IPermissionService perm)
         {
-            _db = db;
+            _mediator = mediator;
             _perm = perm;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
             if (!_perm.HasPermission(userId, "category.manage"))
                 return RedirectToAction("Denied", "Auth");
-            return View(_db.Categories.ToList());
+
+            var list = await _mediator.Send(new GetCategoriesQuery());
+            return View(list);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "category.edit"))
+                return RedirectToAction("Denied", "Auth");
+
+            var category = await _mediator.Send(new GetCategoryByIdQuery(id));
+            return View(category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CategoryUpdateDto dto)
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+            if (!_perm.HasPermission(userId, "category.edit"))
+                return RedirectToAction("Denied", "Auth");
+
+            await _mediator.Send(new UpdateCategoryCommand(dto));
+            return RedirectToAction("Index", new { edited = 1 });
         }
 
         public IActionResult Create()
@@ -31,50 +56,29 @@ namespace PerfumeShop.Presentation.Controllers.Admin
             int userId = int.Parse(User.FindFirst("userId").Value);
             if (!_perm.HasPermission(userId, "category.create"))
                 return RedirectToAction("Denied", "Auth");
+
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(CategoryDto dto)
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
             if (!_perm.HasPermission(userId, "category.create"))
                 return RedirectToAction("Denied", "Auth");
-            _db.Categories.Add(category);
-            _db.SaveChanges();
+
+            await _mediator.Send(new CreateCategoryCommand(dto));
             return RedirectToAction("Index", new { success = 1 });
         }
 
-        public IActionResult Edit(int id)
-        {
-            int userId = int.Parse(User.FindFirst("userId").Value);
-            if (!_perm.HasPermission(userId, "category.edit"))
-                return RedirectToAction("Denied", "Auth");
-            var category = _db.Categories.Find(id);
-            return View(category);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Category category)
-        {
-            int userId = int.Parse(User.FindFirst("userId").Value);
-            if (!_perm.HasPermission(userId, "category.edit"))
-                return RedirectToAction("Denied", "Auth");
-            _db.Categories.Update(category);
-            _db.SaveChanges();
-            return RedirectToAction("Index", new { edited = 1 });
-        }
-
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             int userId = int.Parse(User.FindFirst("userId").Value);
             if (!_perm.HasPermission(userId, "category.delete"))
                 return RedirectToAction("Denied", "Auth");
-            var category = _db.Categories.Find(id);
-            _db.Categories.Remove(category);
-            _db.SaveChanges();
+
+            await _mediator.Send(new DeleteCategoryCommand(id));
             return RedirectToAction("Index", new { deleted = 1 });
         }
     }
 }
-

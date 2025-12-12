@@ -49,6 +49,17 @@ namespace PerfumeShop.Application.Mappings
            .ForMember(d => d.Price, o => o.MapFrom(s => s.Product.Price))
            .ForMember(d => d.Quantity, o => o.MapFrom(s => s.Qty))
            .ForMember(d => d.OrderId, o => o.Ignore());
+            CreateMap<ReviewDto, Review>()
+            .ForMember(r => r.Id, o => o.Ignore())
+            .ForMember(r => r.UserId, o => o.Ignore())
+            .ForMember(r => r.CreatedAt, o => o.Ignore());
+            CreateMap<CategoryDto, Category>();
+            CreateMap<CategoryUpdateDto, Category>();
+            CreateMap<Category, CategoryUpdateDto>();
+
+
+
+
         }
 
 

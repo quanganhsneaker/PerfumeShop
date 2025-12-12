@@ -28,8 +28,7 @@ namespace PerfumeShop.Application.Orders.Admin.Commands
             string[] validStatuses =
             {
                 "Pending",
-                "Processing",
-                "Shipped",
+                "Shipping",
                 "Completed",
                 "Cancelled"
             };
