@@ -7,9 +7,87 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Presentation\wwwroot\css\site.css" />
+    <Content Include="Presentation\wwwroot\favicon.ico" />
+    <Content Include="Presentation\wwwroot\images\logoperfumeshop.jpg" />
+    <Content Include="Presentation\wwwroot\images\products\00530464-43ea-47de-bc9c-371a816d7462.webp" />
+    <Content Include="Presentation\wwwroot\images\products\09db3ecb-1030-4d3d-9afa-7f155b225671.png" />
+    <Content Include="Presentation\wwwroot\images\products\2474ea11-818c-40a5-83da-019b40cf6776.webp" />
+    <Content Include="Presentation\wwwroot\images\products\368da4ac-40f0-47a2-9266-cb703bffffca.png" />
+    <Content Include="Presentation\wwwroot\images\products\74d1c69f-f76c-41d2-a6c3-2ac2dde58067.jpg" />
+    <Content Include="Presentation\wwwroot\images\products\74edad6e-46ba-40a5-9df6-f469648e2edc.webp" />
+    <Content Include="Presentation\wwwroot\images\products\946210e6-b5dd-4645-9840-a6b9293a8068.png" />
+    <Content Include="Presentation\wwwroot\images\products\a989b92e-da1c-44b8-aaf9-b00e97380be2.png" />
+    <Content Include="Presentation\wwwroot\images\products\b79b143b-7ca0-4690-88bc-64566d5bfb87.png" />
+    <Content Include="Presentation\wwwroot\images\products\c8f6567b-ea2f-42e2-adee-dae958cb2dbe.jpg" />
+    <Content Include="Presentation\wwwroot\images\products\d289af0a-9f6c-4cd4-ba5b-8835a3e9a335.jpg" />
+    <Content Include="Presentation\wwwroot\images\products\dad756de-999b-40a8-ae6d-204b065fe83a.jpg" />
+    <Content Include="Presentation\wwwroot\js\site.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <Content Include="Presentation\wwwroot\lib\bootstrap\LICENSE" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery-validation\LICENSE.md" />
+    <Content Include="Presentation\wwwroot\lib\jquery\dist\jquery.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery\dist\jquery.min.js" />
+    <Content Include="Presentation\wwwroot\lib\jquery\dist\jquery.min.map" />
+    <Content Include="Presentation\wwwroot\lib\jquery\LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
@@ -25,8 +103,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Review\" />
-    <Folder Include="wwwroot\images\products\" />
+    <Folder Include="Presentation\Views\Review\" />
   </ItemGroup>
 
 </Project>

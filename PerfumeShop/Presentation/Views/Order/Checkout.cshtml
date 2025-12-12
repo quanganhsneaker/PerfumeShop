@@ -1,0 +1,27 @@
+﻿@using PerfumeShop.Application.DTOs
+@model CheckoutDto
+@{
+    Layout = "_ShopLayout";
+}
+
+<h2 class="mb-3">Thông tin giao hàng</h2>
+
+<form method="post" class="p-4 bg-white shadow rounded">
+
+    <label>Họ tên</label>
+    <input name="FullName" class="form-control mb-3" required />
+
+    <label>Số điện thoại</label>
+    <input name="Phone" class="form-control mb-3" required />
+
+    <label>Địa chỉ</label>
+    <input name="Address" class="form-control mb-3" required />
+
+    <label>Phương thức thanh toán</label>
+    <select name="PaymentMethod" class="form-control mb-3" required>
+        <option value="COD">Thanh toán khi nhận hàng</option>
+        <option value="ONLINE">Thanh toán Online (QR)</option>
+    </select>
+
+    <button class="btn btn-dark w-100">Đặt hàng</button>
+</form>

@@ -1,0 +1,63 @@
+﻿@using PerfumeShop.Domain.Models
+@model List<User>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4 fw-bold"> Quản lý phân quyền nhân viên</h2>
+
+<style>
+    .staff-card {
+        background: #fff;
+        padding: 18px;
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        transition: .25s;
+    }
+
+        .staff-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 22px rgba(0,0,0,0.14);
+        }
+
+    .avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ddd;
+    }
+
+    .btn-edit {
+        background: #ff6ec7;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+    }
+</style>
+
+<div class="row">
+    @foreach (var u in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="staff-card d-flex align-items-center justify-content-between">
+
+                <div class="d-flex align-items-center gap-3">
+                    <img src="https://i.pravatar.cc/150?u=@u.Id" class="avatar" />
+
+                    <div>
+                        <div class="fw-bold">@u.FullName</div>
+                        <div class="small text-muted">@u.Email</div>
+                    </div>
+                </div>
+   
+
+
+                   
+                <a href="/AdminPermission/Edit/@u.Id" class="btn btn-edit">
+                    <i class="bi bi-shield-lock"></i> Quyền
+                </a>
+            </div>
+        </div>
+    }
+</div>
