@@ -1,26 +1,29 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Infrastructure.Data;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Application.Products.Queries
 {
-    public class GetAdminProductListHandler : IRequestHandler<GetAdminProductListQuery, List<ProductListVM>>
-
+    public class GetAdminProductListHandler
+        : IRequestHandler<GetAdminProductListQuery, List<ProductListVM>>
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _repo;
         private readonly IMapper _mapper;
-        public GetAdminProductListHandler(ApplicationDbContext db, IMapper mapper)
+
+        public GetAdminProductListHandler(
+            IProductRepository repo,
+            IMapper mapper)
         {
-            _db = db;
+            _repo = repo;
             _mapper = mapper;
         }
-        public async Task<List<ProductListVM>> Handle(GetAdminProductListQuery request, CancellationToken ct)
+
+        public async Task<List<ProductListVM>> Handle(
+            GetAdminProductListQuery request,
+            CancellationToken ct)
         {
-            var products = await _db.Products
-                .Include(c => c.Category)
-                .ToListAsync(ct);
+            var products = await _repo.GetAllWithCategoryAsync();
             return _mapper.Map<List<ProductListVM>>(products);
         }
     }

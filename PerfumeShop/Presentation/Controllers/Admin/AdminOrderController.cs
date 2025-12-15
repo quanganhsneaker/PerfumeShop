@@ -10,7 +10,7 @@ using PerfumeShop.Application.Orders.Admin.Queries;
 using PerfumeShop.Application.Orders.Admin.Queries.GetAdminOrders;
 using System.Threading.Tasks;
 using PerfumeShop.Infrastructure.Services;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Presentation.Controllers.Admin
 {

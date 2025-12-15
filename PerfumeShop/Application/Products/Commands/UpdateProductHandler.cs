@@ -1,52 +1,42 @@
-﻿using MediatR;
-using AutoMapper;
-using PerfumeShop.Domain.Models;
-using PerfumeShop.Infrastructure.Data;
+﻿using AutoMapper;
+using MediatR;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Application.Products.Commands
 {
     public class UpdateProductHandler
         : IRequestHandler<UpdateProductCommand, bool>
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IWebHostEnvironment _env;
+        private readonly IProductRepository _repo;
+        private readonly IFileStorageService _file;
         private readonly IMapper _mapper;
 
-        public UpdateProductHandler(ApplicationDbContext db, IWebHostEnvironment env, IMapper mapper)
+        public UpdateProductHandler(
+            IProductRepository repo,
+            IFileStorageService file,
+            IMapper mapper)
         {
-            _db = db;
-            _env = env;
+            _repo = repo;
+            _file = file;
             _mapper = mapper;
         }
 
-        public async Task<bool> Handle(UpdateProductCommand request, CancellationToken ct)
+        public async Task<bool> Handle(
+            UpdateProductCommand request,
+            CancellationToken ct)
         {
-            var dto = request.Dto;
-
-            var product = await _db.Products.FindAsync(dto.Id);
+            var product = await _repo.GetByIdAsync(request.Dto.Id);
             if (product == null) return false;
 
-
-            _mapper.Map(dto, product);
-
+            _mapper.Map(request.Dto, product);
 
             if (request.ImageFile != null)
             {
-                string fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
-                string folder = Path.Combine(_env.WebRootPath, "images/products");
-
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
-
-                using (var stream = new FileStream(Path.Combine(folder, fileName), FileMode.Create))
-                {
-                    await request.ImageFile.CopyToAsync(stream);
-                }
-
-                product.ImageUrl = "/images/products/" + fileName;
+                product.ImageUrl =
+                    await _file.SaveProductImageAsync(request.ImageFile);
             }
 
-            await _db.SaveChangesAsync(ct);
+            await _repo.UpdateAsync(product);
             return true;
         }
     }

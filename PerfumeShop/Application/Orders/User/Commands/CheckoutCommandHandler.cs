@@ -1,51 +1,78 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using PerfumeShop.Application.Orders.User.Commands;
-using PerfumeShop.Application.Services;
-using PerfumeShop.Infrastructure.Data;
-using PerfumeShop.Infrastructure.Services;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
+
 namespace PerfumeShop.Application.Orders.User.Commands
 {
-    public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, CheckoutResult>
+    public class CheckoutCommandHandler
+        : IRequestHandler<CheckoutCommand, CheckoutResult>
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IOrderRepository _orderRepo;
+        private readonly IPaymentService _paymentService;
         private readonly IMediator _mediator;
-        private readonly IPayOSService _payOS;
-        public CheckoutCommandHandler(ApplicationDbContext db, IMediator mediator, IPayOSService payOS)
+
+        public CheckoutCommandHandler(
+            IOrderRepository orderRepo,
+            IPaymentService paymentService,
+            IMediator mediator)
         {
-            _db = db;
+            _orderRepo = orderRepo;
+            _paymentService = paymentService;
             _mediator = mediator;
-            _payOS = payOS;
         }
-        public async Task<CheckoutResult> Handle(CheckoutCommand request, CancellationToken cancellationToken)
+
+        public async Task<CheckoutResult> Handle(
+            CheckoutCommand request,
+            CancellationToken ct)
         {
-            var dto = request.Dto;
-            var userId = request.UserId;
-            int newOrderId = await _mediator.Send(new CreateOrderCommand(dto, userId));
-            if (newOrderId < 0)
-                return new CheckoutResult { OrderId = -1 };
-            var order = await _db.Orders.FirstAsync(x => x.Id == newOrderId);
-            if (dto.PaymentMethod == "ONLINE")
+    
+            int orderId = await _mediator.Send(
+                new CreateOrderCommand(
+                    request.Dto,
+                    request.UserId
+                ),
+                ct
+            );
+
+            if (orderId <= 0)
             {
-                var payData = await _payOS.CreatePaymentLink(newOrderId, order.TotalAmount);
+                return new CheckoutResult
+                {
+                    OrderId = -1
+                };
+            }
+
+            var order = await _orderRepo.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                return new CheckoutResult
+                {
+                    OrderId = -1
+                };
+            }
+
+            if (request.Dto.PaymentMethod == "ONLINE")
+            {
+                var payment = await _paymentService
+                    .CreatePaymentAsync(
+                        orderId,
+                        order.TotalAmount
+                    );
 
                 return new CheckoutResult
                 {
-                    OrderId = newOrderId,
+                    OrderId = orderId,
                     IsOnline = true,
                     Amount = order.TotalAmount,
-                    QrCode = _payOS.ConvertQRToBase64(payData.qrCode),
-                    //RedirectUrl = payData.checkoutUrl
+                    QrCode = payment.QrCode,
+                    RedirectUrl = payment.CheckoutUrl
                 };
             }
+
             return new CheckoutResult
             {
-                OrderId = newOrderId,
+                OrderId = orderId,
                 IsOnline = false
             };
         }
-
-
     }
 }

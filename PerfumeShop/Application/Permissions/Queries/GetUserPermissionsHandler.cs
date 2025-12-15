@@ -1,24 +1,24 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Domain.Models;
-using PerfumeShop.Infrastructure.Data;
 
 namespace PerfumeShop.Application.Permissions.Queries
 {
-    public class GetUserPermissionsHandler : IRequestHandler<GetUserPermissionsQuery, User>
+    public class GetUserPermissionsHandler
+        : IRequestHandler<GetUserPermissionsQuery, User?>
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IPermissionRepository _repo;
 
-        public GetUserPermissionsHandler(ApplicationDbContext db)
+        public GetUserPermissionsHandler(IPermissionRepository repo)
         {
-            _db = db;
+            _repo = repo;
         }
 
-        public async Task<User> Handle(GetUserPermissionsQuery request, CancellationToken ct)
+        public async Task<User?> Handle(
+            GetUserPermissionsQuery request,
+            CancellationToken ct)
         {
-            return await _db.Users
-                .Include(u => u.UserPermissions)
-                .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
+            return await _repo.GetUserWithPermissionsAsync(request.UserId);
         }
     }
 }

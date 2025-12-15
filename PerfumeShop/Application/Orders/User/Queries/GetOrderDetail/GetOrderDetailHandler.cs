@@ -1,29 +1,28 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Infrastructure.Data;
+using PerfumeShop.Domain.Interfaces;
+
 namespace PerfumeShop.Application.Orders.User.Queries.GetOrderDetail
 {
-    public class GetOrderDetailHandler 
-        : IRequestHandler<GetOrderDetailQuery, OrderDetailVM>
+    public class GetOrderDetailHandler
+        : IRequestHandler<GetOrderDetailQuery, OrderDetailVM?>
     {
-        private readonly IMapper _mapper;
-        private readonly ApplicationDbContext _db;
-        public GetOrderDetailHandler(ApplicationDbContext db, IMapper mapper)
+        private readonly IOrderRepository _repo;
+
+        public GetOrderDetailHandler(IOrderRepository repo)
         {
-            _db = db;
-            _mapper = mapper;
+            _repo = repo;
         }
-        public async Task<OrderDetailVM> Handle ( GetOrderDetailQuery request, CancellationToken ct)
+
+        public async Task<OrderDetailVM?> Handle(
+     GetOrderDetailQuery request,
+     CancellationToken ct)
         {
-            var order = await _db.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(o => o.Id == request.OrderId
-                && o.UserId == request.UserId);
-            if (order == null) return null;
-            return _mapper.Map<OrderDetailVM>(order);
+            return await _repo.GetOrderDetailAsync(
+                request.OrderId,
+                request.UserId
+            );
         }
+
     }
 }

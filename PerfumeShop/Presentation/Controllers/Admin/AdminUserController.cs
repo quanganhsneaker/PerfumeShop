@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Infrastructure.Data;
 using PerfumeShop.Infrastructure.Services;
 

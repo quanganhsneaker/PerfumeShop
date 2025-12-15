@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using PerfumeShop.Application.DTOs;
 using PerfumeShop.Domain.Models;
-
 namespace PerfumeShop.Application.Mappings
 {
     public class AutoMapperProfile : Profile
@@ -12,15 +11,13 @@ namespace PerfumeShop.Application.Mappings
             CreateMap<Order, CheckoutDto>().ReverseMap();
             CreateMap<Review, ReviewDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemVM>()
-                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
-                .ForMember(d => d.Image, o => o.MapFrom(s => s.Product.ImageUrl));
+            .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+            .ForMember(d => d.Image, o => o.MapFrom(s => s.Product.ImageUrl));
             CreateMap<Order, OrderDetailVM>()
             .ForMember(d => d.Items, o => o.MapFrom(s => s.OrderItems));
             CreateMap<Order, OrderListVM>();
             CreateMap<Order, AdminOrderListVM>()
-            .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.User.FullName));
-
-        
+            .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.User.FullName));        
             CreateMap<User, LoginDto>().ReverseMap();
             CreateMap<Order, AdminOrderDetailVM>()
                 .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.User.FullName))
@@ -35,10 +32,9 @@ namespace PerfumeShop.Application.Mappings
             .ForMember(dest => dest.ImageUrl, opt => opt.Ignore());
             CreateMap<Product, ProductUpdateDto>();
             CreateMap<Order, AdminOrderListVM>()
-                .ForMember(dest => dest.CustomerName,
-                           opt => opt.MapFrom(src => src.User.FullName));
+            .ForMember(dest => dest.CustomerName,
+            opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<CheckoutDto, Order>()
-       
             .ForMember(d => d.Status, o => o.MapFrom(_ => "Pending"))
             .ForMember(d => d.TotalAmount, o => o.Ignore())   
             .ForMember(d => d.UserId, o => o.Ignore())        
@@ -61,9 +57,5 @@ namespace PerfumeShop.Application.Mappings
 
 
         }
-
-
-
     }
-
 }

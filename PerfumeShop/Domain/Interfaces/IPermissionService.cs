@@ -1,4 +1,4 @@
-﻿namespace PerfumeShop.Application.Services
+﻿namespace PerfumeShop.Domain.Interfaces
 {
     public interface IPermissionService
     {

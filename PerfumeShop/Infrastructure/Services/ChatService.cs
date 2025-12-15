@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Infrastructure.Data;
 using System.Net.Http;
 using System.Text;

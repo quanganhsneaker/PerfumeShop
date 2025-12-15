@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Infrastructure.Data;
 
 namespace PerfumeShop.Infrastructure.Services

@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using PerfumeShop.Application.Services;
 using System.Reflection;
 using FluentValidation;
-using System.Reflection;
 using PerfumeShop.Application.Common.Behaviors;
+using PerfumeShop.Domain.Interfaces;
 namespace PerfumeShop.Application
 {
     public static class DependencyInjection

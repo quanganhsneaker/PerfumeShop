@@ -10,7 +10,7 @@ using PerfumeShop.Application.DTOs;
 
 using PerfumeShop.Infrastructure.Data;
 using PerfumeShop.Infrastructure.Services;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Presentation.Controllers.Admin
 {

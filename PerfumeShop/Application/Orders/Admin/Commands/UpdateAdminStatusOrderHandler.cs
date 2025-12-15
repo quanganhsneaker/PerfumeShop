@@ -1,27 +1,25 @@
 ﻿using MediatR;
-using PerfumeShop.Infrastructure.Data;
-
+using PerfumeShop.Domain.Interfaces;
 namespace PerfumeShop.Application.Orders.Admin.Commands
 {
     public class UpdateAdminStatusOrderHandler
-        :IRequestHandler<UpdateAdminStatusOrderCommand, bool>
-
+        : IRequestHandler<UpdateAdminStatusOrderCommand, bool>
     {
-        private readonly ApplicationDbContext _db;
-        public UpdateAdminStatusOrderHandler(ApplicationDbContext db)
+        private readonly IAdminOrderRepository _repo;
+
+        public UpdateAdminStatusOrderHandler(IAdminOrderRepository repo)
         {
-            _db = db;
-        }
-        public async Task<bool> Handle(UpdateAdminStatusOrderCommand request, CancellationToken ct)
-        {
-            var order = await _db.Orders.FindAsync(request.OrderId);
-            if (order == null) return false;
-            order.Status = request.Status;
-            await _db.SaveChangesAsync();
-            return true;
-                
-            
+            _repo = repo;
         }
 
+        public async Task<bool> Handle(
+            UpdateAdminStatusOrderCommand request,
+            CancellationToken ct)
+        {
+            return await _repo.UpdateStatusAsync(
+                request.OrderId,
+                request.Status
+            );
+        }
     }
 }

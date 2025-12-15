@@ -1,48 +1,40 @@
-﻿using MediatR;
-using AutoMapper;
+﻿using AutoMapper;
+using MediatR;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Domain.Models;
-using PerfumeShop.Infrastructure.Data;
 
 namespace PerfumeShop.Application.Products.Commands
 {
     public class CreateProductHandler
         : IRequestHandler<CreateProductCommand, int>
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IWebHostEnvironment _env;
+        private readonly IProductRepository _repo;
+        private readonly IFileStorageService _file;
         private readonly IMapper _mapper;
 
-        public CreateProductHandler(ApplicationDbContext db, IWebHostEnvironment env, IMapper mapper)
+        public CreateProductHandler(
+            IProductRepository repo,
+            IFileStorageService file,
+            IMapper mapper)
         {
-            _db = db;
-            _env = env;
+            _repo = repo;
+            _file = file;
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(CreateProductCommand request, CancellationToken ct)
+        public async Task<int> Handle(
+            CreateProductCommand request,
+            CancellationToken ct)
         {
-    
             var product = _mapper.Map<Product>(request.Dto);
 
             if (request.ImageFile != null)
             {
-                string fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
-                string folder = Path.Combine(_env.WebRootPath, "images/products");
-
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
-
-                using (var stream = new FileStream(Path.Combine(folder, fileName), FileMode.Create))
-                {
-                    await request.ImageFile.CopyToAsync(stream);
-                }
-
-                product.ImageUrl = "/images/products/" + fileName;
+                product.ImageUrl =
+                    await _file.SaveProductImageAsync(request.ImageFile);
             }
 
-            _db.Products.Add(product);
-            await _db.SaveChangesAsync(ct);
-
+            await _repo.AddAsync(product);
             return product.Id;
         }
     }

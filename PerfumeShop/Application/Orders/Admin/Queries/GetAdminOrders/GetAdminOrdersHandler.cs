@@ -1,28 +1,24 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Infrastructure.Data;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Application.Orders.Admin.Queries.GetAdminOrders
 {
     public class GetAdminOrdersHandler
-         : IRequestHandler<GetAdminOrdersQuery, List<AdminOrderListVM>>
+        : IRequestHandler<GetAdminOrdersQuery, List<AdminOrderListVM>>
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IMapper _mapper;
-        public GetAdminOrdersHandler(ApplicationDbContext db, IMapper mapper)
+        private readonly IAdminOrderRepository _repo;
+
+        public GetAdminOrdersHandler(IAdminOrderRepository repo)
         {
-            _db = db;
-            _mapper = mapper;
+            _repo = repo;
         }
-        public async Task<List<AdminOrderListVM>> Handle(GetAdminOrdersQuery request, CancellationToken ct)
+
+        public async Task<List<AdminOrderListVM>> Handle(
+            GetAdminOrdersQuery request,
+            CancellationToken ct)
         {
-            var orders = await _db.Orders
-                .Include(o => o.User)
-                .OrderByDescending(o => o.CreatedAt)
-                .ToListAsync();
-            return _mapper.Map<List<AdminOrderListVM>>(orders);
+            return await _repo.GetAllAsync();
         }
     }
 }

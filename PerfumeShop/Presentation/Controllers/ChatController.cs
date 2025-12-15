@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 
 
 namespace PerfumeShop.Presentation.Controllers

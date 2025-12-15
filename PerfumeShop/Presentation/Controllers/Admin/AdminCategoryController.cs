@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PerfumeShop.Application.Categories.Commands;
 using PerfumeShop.Application.Categories.Queries;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Application.Services;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Presentation.Controllers.Admin
 {

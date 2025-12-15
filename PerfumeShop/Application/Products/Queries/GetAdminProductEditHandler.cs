@@ -1,26 +1,29 @@
-﻿using MediatR;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using MediatR;
 using PerfumeShop.Application.DTOs;
-using PerfumeShop.Infrastructure.Data;
+using PerfumeShop.Domain.Interfaces;
 
 namespace PerfumeShop.Application.Products.Queries
 {
-    public class GetAdminProductEditHandler 
-        :IRequestHandler<GetAdminProductEditQuery, ProductUpdateDto>
+    public class GetAdminProductEditHandler
+        : IRequestHandler<GetAdminProductEditQuery, ProductUpdateDto?>
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _repo;
         private readonly IMapper _mapper;
-        public GetAdminProductEditHandler(ApplicationDbContext db, IMapper mapper)
+
+        public GetAdminProductEditHandler(
+            IProductRepository repo,
+            IMapper mapper)
         {
-            _db = db;
+            _repo = repo;
             _mapper = mapper;
         }
-        public async Task<ProductUpdateDto> Handle(GetAdminProductEditQuery request, CancellationToken ct)
-        {
-            var product = await _db.Products
-                .FirstOrDefaultAsync(p => p.Id == request.Id, ct);
 
+        public async Task<ProductUpdateDto?> Handle(
+            GetAdminProductEditQuery request,
+            CancellationToken ct)
+        {
+            var product = await _repo.GetByIdAsync(request.Id);
             if (product == null) return null;
 
             return _mapper.Map<ProductUpdateDto>(product);

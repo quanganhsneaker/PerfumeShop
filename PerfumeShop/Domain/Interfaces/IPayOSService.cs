@@ -1,7 +1,7 @@
 ﻿using Net.payOS.Types;
 using System.Threading.Tasks;
 
-namespace PerfumeShop.Application.Services
+namespace PerfumeShop.Domain.Interfaces
 {
     public interface IPayOSService
     {

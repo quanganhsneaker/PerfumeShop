@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using PerfumeShop.Infrastructure.Data;
+using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Domain.Models;
 
 namespace PerfumeShop.Application.Reviews.Queries
@@ -8,19 +7,18 @@ namespace PerfumeShop.Application.Reviews.Queries
     public class GetProductReviewsHandler
         : IRequestHandler<GetProductReviewsQuery, List<Review>>
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IReviewRepository _repo;
 
-        public GetProductReviewsHandler(ApplicationDbContext db)
+        public GetProductReviewsHandler(IReviewRepository repo)
         {
-            _db = db;
+            _repo = repo;
         }
 
-        public async Task<List<Review>> Handle(GetProductReviewsQuery request, CancellationToken ct)
+        public async Task<List<Review>> Handle(
+            GetProductReviewsQuery request,
+            CancellationToken ct)
         {
-            return await _db.Reviews
-                .Where(r => r.ProductId == request.ProductId)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync(ct);
+            return await _repo.GetByProductAsync(request.ProductId);
         }
     }
 }
