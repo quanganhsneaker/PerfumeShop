@@ -10,11 +10,13 @@ namespace PerfumeShop.Application.Reviews.Commands
     {
         private readonly IReviewRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _uow;
 
-        public AddReviewHandler(IReviewRepository repo, IMapper mapper)
+        public AddReviewHandler(IReviewRepository repo, IMapper mapper, IUnitOfWork uow)
         {
             _repo = repo;
             _mapper = mapper;
+            _uow = uow;
         }
 
         public async Task<bool> Handle(
@@ -34,6 +36,7 @@ namespace PerfumeShop.Application.Reviews.Commands
             review.CreatedAt = DateTime.Now;
             await _repo.AddAsync(review);
             await _repo.UpdateProductRatingAsync(dto.ProductId);
+            await _uow.SaveChangesAsync(ct);
 
             return true;
         }

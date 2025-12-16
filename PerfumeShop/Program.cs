@@ -28,11 +28,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.Configure<GroqSettings>(
 builder.Configuration.GetSection("GroqAI"));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    )
-);
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(
+//    builder.Configuration.GetConnectionString("DefaultConnection")
+//    )
+//);
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", opt =>
     {

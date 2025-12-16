@@ -11,15 +11,17 @@ namespace PerfumeShop.Application.Products.Commands
         private readonly IProductRepository _repo;
         private readonly IFileStorageService _file;
         private readonly IMapper _mapper;
-
+        private readonly IUnitOfWork _uow;
         public CreateProductHandler(
             IProductRepository repo,
             IFileStorageService file,
-            IMapper mapper)
+            IMapper mapper,
+            IUnitOfWork uow)
         {
             _repo = repo;
             _file = file;
             _mapper = mapper;
+            _uow = uow;
         }
 
         public async Task<int> Handle(
@@ -35,6 +37,7 @@ namespace PerfumeShop.Application.Products.Commands
             }
 
             await _repo.AddAsync(product);
+            await _uow.SaveChangesAsync(ct);
             return product.Id;
         }
     }

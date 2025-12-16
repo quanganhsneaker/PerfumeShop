@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PerfumeShop.Domain.Interfaces;
 using PerfumeShop.Infrastructure.Data;
 using PerfumeShop.Infrastructure.Persistence;
+using PerfumeShop.Infrastructure.Persistence.Repositories;
 using PerfumeShop.Infrastructure.Repositories;
 using PerfumeShop.Infrastructure.Services;
 
@@ -27,8 +28,8 @@ namespace PerfumeShop.Infrastructure
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IOrderRepository, OrderRepository>();          
-            services.AddScoped<IAdminOrderRepository, AdminOrderRepository>(); 
-       
+            services.AddScoped<IAdminOrderRepository, AdminOrderRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IOrderCodeService, OrderCodeService>();

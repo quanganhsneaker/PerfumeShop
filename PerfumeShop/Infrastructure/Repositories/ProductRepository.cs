@@ -13,28 +13,26 @@ namespace PerfumeShop.Infrastructure.Repositories
         {
             _db = db;
         }
-
         public async Task<List<Product>> GetAllWithCategoryAsync()
         {
             return await _db.Products
                 .Include(p => p.Category)
                 .ToListAsync();
         }
-
         public async Task<Product?> GetByIdAsync(int id)
         {
             return await _db.Products.FindAsync(id);
         }
-
-        public async Task AddAsync(Product product)
+        public Task AddAsync(Product product)
         {
             _db.Products.Add(product);
-            await _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
-
-        public async Task UpdateAsync(Product product)
+        public Task UpdateAsync(Product product)
         {
-            await _db.SaveChangesAsync();
+            _db.Products.Update(product);
+            return Task.CompletedTask;
         }
     }
+
 }

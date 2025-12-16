@@ -10,15 +10,17 @@ namespace PerfumeShop.Application.Products.Commands
         private readonly IProductRepository _repo;
         private readonly IFileStorageService _file;
         private readonly IMapper _mapper;
-
+        private readonly IUnitOfWork _uow;
         public UpdateProductHandler(
             IProductRepository repo,
             IFileStorageService file,
-            IMapper mapper)
+            IMapper mapper,
+            IUnitOfWork uow)
         {
             _repo = repo;
             _file = file;
             _mapper = mapper;
+            _uow = uow;
         }
 
         public async Task<bool> Handle(
@@ -37,6 +39,7 @@ namespace PerfumeShop.Application.Products.Commands
             }
 
             await _repo.UpdateAsync(product);
+            await _uow.SaveChangesAsync(ct);
             return true;
         }
     }

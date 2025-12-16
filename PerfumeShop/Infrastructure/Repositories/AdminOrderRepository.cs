@@ -95,8 +95,8 @@ namespace PerfumeShop.Infrastructure.Repositories
             if (order == null) return false;
 
             order.Status = status;
-            await _db.SaveChangesAsync();
             return true;
         }
+
     }
 }

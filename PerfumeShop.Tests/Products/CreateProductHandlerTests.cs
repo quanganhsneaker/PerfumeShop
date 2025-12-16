@@ -1,60 +1,70 @@
-﻿//using AutoMapper;
-//using FluentAssertions;
-//using Microsoft.AspNetCore.Hosting;
-//using Microsoft.EntityFrameworkCore;
-//using Moq;
-//using PerfumeShop.Application.DTOs;
-//using PerfumeShop.Application.Products.Commands;
-//using PerfumeShop.Domain.Models;
-//using PerfumeShop.Infrastructure.Data;
-//using Xunit;
+﻿using AutoMapper;
+using FluentAssertions;
+using Moq;
+using PerfumeShop.Application.DTOs;
+using PerfumeShop.Application.Products.Commands;
+using PerfumeShop.Domain.Interfaces;
+using PerfumeShop.Domain.Models;
+using Xunit;
 
-//public class CreateProductHandlerTests
-//{
-//    private readonly ApplicationDbContext _db;
-//    private readonly Mock<IWebHostEnvironment> _env;
-//    private readonly IMapper _mapper;
+public class CreateProductHandlerTests
+{
+    private readonly Mock<IProductRepository> _productRepo;
+    private readonly Mock<IFileStorageService> _fileStorage;
+    private readonly Mock<IUnitOfWork> _uow;
+    private readonly IMapper _mapper;
 
-//    public CreateProductHandlerTests()
-//    {
-//        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-//            .UseInMemoryDatabase("CreateProductDb")
-//            .Options;
+    public CreateProductHandlerTests()
+    {
+        _productRepo = new Mock<IProductRepository>();
+        _fileStorage = new Mock<IFileStorageService>();
+        _uow = new Mock<IUnitOfWork>();
 
-//        _db = new ApplicationDbContext(options);
+        var mapperConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<ProductCreateDto, Product>();
+        });
 
-//        _env = new Mock<IWebHostEnvironment>();
-//        _env.Setup(e => e.WebRootPath).Returns("wwwroot");
+        _mapper = mapperConfig.CreateMapper();
+    }
 
-//        var mapperConfig = new MapperConfiguration(cfg =>
-//        {
-//            cfg.CreateMap<ProductCreateDto, Product>();
-//        });
+    [Fact]
+    public async Task Should_Create_Product()
+    {
+        // Arrange
+        _productRepo
+            .Setup(x => x.AddAsync(It.IsAny<Product>()))
+            .Callback<Product>(p => p.Id = 1)
+            .Returns(Task.CompletedTask);
 
-//        _mapper = mapperConfig.CreateMapper();
-//    }
+        _uow
+            .Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
-//    [Fact]
-//    public async Task Should_Create_Product()
-//    {
-//        var handler = new CreateProductHandler(_db, _env.Object, _mapper);
+        var handler = new CreateProductHandler(
+            _productRepo.Object,
+            _fileStorage.Object,
+            _mapper,
+            _uow.Object
+        );
 
-//        var command = new CreateProductCommand(
-//            new ProductCreateDto
-//            {
-//                Name = "Test Perfume",
-//                Description = "Nice smell",
-//                Price = 150000
-//            },
-//            null
-//        );
+        var command = new CreateProductCommand(
+            new ProductCreateDto
+            {
+                Name = "Test Perfume",
+                Description = "Nice smell",
+                Price = 150000
+            },
+            null
+        );
 
-//        var id = await handler.Handle(command, default);
+        // Act
+        var id = await handler.Handle(command, default);
 
-//        id.Should().BeGreaterThan(0);
+        // Assert
+        id.Should().Be(1);
 
-//        var product = await _db.Products.FindAsync(id);
-//        product.Name.Should().Be("Test Perfume");
-//        product.Price.Should().Be(150000);
-//    }
-//}
+        _productRepo.Verify(x => x.AddAsync(It.IsAny<Product>()), Times.Once);
+        _uow.Verify(x => x.SaveChangesAsync(default), Times.Once);
+    }
+}

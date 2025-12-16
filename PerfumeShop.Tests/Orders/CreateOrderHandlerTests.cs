@@ -60,8 +60,21 @@ namespace PerfumeShop.Tests.Orders
             };
 
             _orderRepo
-                .Setup(x => x.GetCartByUserIdAsync(1))
-                .ReturnsAsync(cart);
+      .Setup(x => x.GetCartByUserIdAsync(1))
+      .ReturnsAsync(cart);
+
+            _orderRepo
+                .Setup(x => x.AddAsync(It.IsAny<Order>()))
+                .Callback<Order>(o => o.Id = 1)
+                .Returns(Task.CompletedTask);
+
+            _orderRepo
+                .Setup(x => x.AddItemsAsync(It.IsAny<List<OrderItem>>()))
+                .Returns(Task.CompletedTask);
+
+            _orderRepo
+                .Setup(x => x.RemoveCartAsync(cart))
+                .Returns(Task.CompletedTask);
 
             _orderCode
                 .Setup(x => x.GenerateOrderCode(It.IsAny<int>()))
@@ -88,10 +101,9 @@ namespace PerfumeShop.Tests.Orders
                 1
             );
 
-            // Act
             var result = await handler.Handle(command, default);
 
-            // Assert
+
             result.Should().BeGreaterThan(0);
 
             _orderRepo.Verify(x => x.AddAsync(It.IsAny<Order>()), Times.Once);

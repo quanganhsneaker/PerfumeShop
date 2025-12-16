@@ -35,7 +35,6 @@ namespace PerfumeShop.Infrastructure.Repositories
         public async Task AddAsync(Review review)
         {
             await _db.Reviews.AddAsync(review);
-            await _db.SaveChangesAsync();
         }
 
         public async Task<float> UpdateProductRatingAsync(int productId)
@@ -46,12 +45,10 @@ namespace PerfumeShop.Infrastructure.Repositories
 
             var product = await _db.Products.FindAsync(productId);
             if (product != null)
-            {
                 product.Rating = (float)avg;
-                await _db.SaveChangesAsync();
-            }
 
             return (float)avg;
         }
+
     }
 }

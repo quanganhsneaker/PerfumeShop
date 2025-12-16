@@ -68,7 +68,7 @@ namespace PerfumeShop.Infrastructure.Repositories
                 });
             }
 
-            await _db.SaveChangesAsync();
+          
             return true;
         }
     }
